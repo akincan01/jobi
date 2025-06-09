@@ -1,4 +1,4 @@
-import './Home.css';
+import './App.css';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
@@ -11,12 +11,26 @@ function App() {
         <p className="home-subtitle">
           An app that matches you the best job, all integrated
         </p>
-        <button
-          className="get-started-btn"
-          onClick={() => navigate('/username')}
-        >
-          Get Started
-        </button>
+        <div className="button-group">
+          <button
+            className="home-btn"
+            onClick={() => navigate('/register')}
+          >
+            Sign in as User
+          </button>
+          <button
+            className="home-btn"
+            onClick={() => navigate('/register/business')}
+          >
+            Sign in as Business
+          </button>
+          <button
+            className="home-btn"
+            onClick={() => navigate('/login')}
+          >
+            Log In
+          </button>
+        </div>
       </div>
     </div>
   );

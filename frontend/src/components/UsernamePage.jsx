@@ -3,17 +3,41 @@ import { useNavigate } from 'react-router-dom';
 
 function UsernamePage() {
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Username submitted: ${username}`);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/accounts/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Success:', data);
+        alert(`User created: ${username}`);
+        navigate('/');
+      } else {
+        const errorData = await response.json();
+        console.error('Backend error:', errorData);
+        alert('Submission failed: ' + (errorData.username?.[0] || errorData.password?.[0] || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error('Network or server error:', err);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Enter your username</h2>
+        <h2 style={styles.heading}>Register</h2>
         <input
           type="text"
           placeholder="Username"
@@ -21,8 +45,15 @@ function UsernamePage() {
           onChange={(e) => setUsername(e.target.value)}
           style={styles.input}
         />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={styles.input}
+        />
         <button type="submit" style={styles.button}>
-          Submit
+          Register
         </button>
         <button
           type="button"
@@ -47,42 +78,43 @@ const styles = {
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
-    padding: '2rem',
+    gap: '1.5rem',
+    padding: '3rem',
     backgroundColor: '#fff',
-    borderRadius: '12px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-    minWidth: '300px',
+    borderRadius: '16px',
+    boxShadow: '0 0 15px rgba(0,0,0,0.1)',
+    minWidth: '400px',
   },
   heading: {
     margin: 0,
-    fontSize: '1.5rem',
+    fontSize: '2rem',
     textAlign: 'center',
   },
   input: {
-    padding: '0.75rem',
-    fontSize: '1rem',
-    borderRadius: '8px',
+    padding: '1.25rem',
+    fontSize: '1.2rem',
+    borderRadius: '10px',
     border: '1px solid #ccc',
   },
   button: {
-    padding: '0.75rem',
-    fontSize: '1rem',
-    borderRadius: '8px',
+    padding: '1rem',
+    fontSize: '1.2rem',
+    borderRadius: '10px',
     border: 'none',
     backgroundColor: '#333',
     color: '#fff',
     cursor: 'pointer',
   },
   backButton: {
-    padding: '0.75rem',
-    fontSize: '1rem',
-    borderRadius: '8px',
+    padding: '1rem',
+    fontSize: '1.2rem',
+    borderRadius: '10px',
     border: '1px solid #ccc',
     backgroundColor: '#fff',
     color: '#333',
     cursor: 'pointer',
   },
 };
+
 
 export default UsernamePage;
