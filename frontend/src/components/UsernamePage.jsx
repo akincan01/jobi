@@ -22,7 +22,7 @@ function UsernamePage() {
         const data = await response.json();
         console.log('Success:', data);
         alert(`User created: ${username}`);
-        navigate('/');
+        navigate('/profile');
       } else {
         const errorData = await response.json();
         console.error('Backend error:', errorData);
